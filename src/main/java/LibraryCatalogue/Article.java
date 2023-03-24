@@ -21,6 +21,13 @@ public class Article {
         pageNum = pn;
     }
 
+    public Article(long isbn, String t, Year release, int pn) {
+        ISBN_code = isbn;
+        title = t;
+        release_Y = release;
+        pageNum = pn;
+    }
+
 
 
     private long  generateID() {
