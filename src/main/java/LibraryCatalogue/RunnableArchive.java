@@ -29,7 +29,7 @@ public class RunnableArchive {
 
         //addArticle();
         //removeArticleFromArchive();
-        searchArticleByISBN();
+        generalSearch();
 
 
     }
@@ -62,6 +62,27 @@ public class RunnableArchive {
     }
 
     public static int askFor() {
+        boolean isRunning = true;
+        int pick = 0;
+        while (isRunning) {
+            if (input.hasNextInt()) {
+                pick = input.nextInt();
+                if (pick < 0 || pick > 3) {
+                    log.info("invalid value, insert again");
+                    input.nextLine();
+                    continue;
+                }
+            } else {
+                log.warn("Unfit type of value, please insert an integer");
+                input.nextLine();
+                continue;
+            }
+            isRunning = false;
+        }
+        return pick;
+    }
+
+    public static int askFor(int i) {
         boolean isRunning = true;
         int pick = 0;
         while (isRunning) {
@@ -122,11 +143,20 @@ public class RunnableArchive {
     }
 
     public static void printArticleISBN() {
-        archive.forEach(article -> System.out.println("title: " + article.title + " - ISBN: " + article.ISBN_code));
+        archive.forEach(article -> log.info("title: " + article.title + " - ISBN: " + article.ISBN_code));
     }
 
-    public static void printArticleISBN(String s) {
-        archive.forEach(article -> System.out.println(s + "- ISBN: " + article.ISBN_code));
+    public static void printArticleInfo(String s) {
+        if (s.equals("isbn")) {
+            archive.forEach(article -> log.info("ISBN: " + article.ISBN_code));
+        } else if (s.equals("year")) {
+            archive.forEach(article -> log.info("Year: " + article.release_Y));
+        } else {
+            archive.stream()
+                    .filter(article -> article instanceof Book )
+                    .forEach(article -> log.info("Author: " + ((Book) article).author));
+        }
+
     }
 
     public static void addToArchive(int n) {
@@ -136,7 +166,7 @@ public class RunnableArchive {
             log.info("insert the year:");
             String year = input.next();
             log.info("insert the number of page:");
-            int pageNum = askFor();
+            int pageNum = askFor(0);
             log.info("insert the author:");
             String auth = input.next();
             log.info("insert the genre:");
@@ -173,22 +203,79 @@ public class RunnableArchive {
         log.info(archive.toString());
     }
 
-    public static void searchArticleByISBN() {
-        log.info("Okay, let's remove an article from the archive");
-        log.info("This is the current content of the archive:");
-        printArticleISBN("");
-        log.info("Please, insert the ISBN of the book you would like to delete:");
-        long pick = askFor("long");
+    public static void generalSearch() {
+        log.info("What type of search you would like to perform?");
+        log.info("Digit in the terminal the corresponding value:");
+        log.info("1 - By ISBN | 2 - by Year | 3 - by Author");
+        int pick = askFor();
+        switch (pick) {
+            case 1 -> {
+                log.info("Okay, let's remove an article from the archive");
+                log.info("This is the current content of the archive:");
+                printArticleInfo("isbn");
+                log.info("Please, insert the ISBN of the article you would like to delete:");
+                long ISBN = askFor("long");
+                searchArticleBy(ISBN);
+            }
+            case 2 -> {
+                log.info("Okay, let's remove an article from the archive");
+                log.info("This is the current content of the archive:");
+                printArticleInfo("year");
+                log.info("Please, insert the Year of the article you would like to delete:");
+                String year = input.next();
+                searchArticleBy(Year.parse(year));
+            }
+            case 3 -> {
+                log.info("Okay, let's remove an article from the archive");
+                log.info("This is the current content of the archive:");
+                printArticleInfo("auth");
+                log.info("Please, insert the Author of the article you would like to delete:");
+                String auth = input.next();
+                searchArticleBy(auth);
+            }
+        }
+    }
 
+
+    public static void searchArticleBy(long n) {
         Article filtered = archive.stream()
-                .filter(article -> article.ISBN_code == pick)
+                .filter(article -> article.ISBN_code == n)
                 .findFirst()
                 .orElse(null);
 
         if (filtered == null) {
-            log.warn("The ISBN you were searching doesn't exist in the archive.");
+            log.warn("The ISBN you were searching for doesn't exist in the archive.");
         } else {
             log.info(filtered.toString());
         }
     }
+
+    public static void searchArticleBy(Year y) {
+        Article filtered = archive.stream()
+                .filter(article -> article.release_Y.equals(y))
+                .findFirst()
+                .orElse(null);
+
+        if (filtered == null) {
+            log.warn("The Year you were searching for doesn't exist in the archive.");
+        } else {
+            log.info(filtered.toString());
+        }
+    }
+
+    public static void searchArticleBy(String auth) {
+        Article filtered = archive.stream()
+                .filter(article -> article instanceof Book)
+                .filter(article -> ((Book) article).author.equalsIgnoreCase(auth))
+                .findFirst()
+                .orElse(null);
+
+        if (filtered == null) {
+            log.warn("The Year you were searching for doesn't exist in the archive.");
+        } else {
+            log.info(filtered.toString());
+        }
+    }
+
+
 }
