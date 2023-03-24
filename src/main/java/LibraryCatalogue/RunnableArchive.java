@@ -29,7 +29,7 @@ public class RunnableArchive {
 
         //addArticle();
         //removeArticleFromArchive();
-
+        searchArticleByISBN();
 
 
     }
@@ -173,5 +173,22 @@ public class RunnableArchive {
         log.info(archive.toString());
     }
 
+    public static void searchArticleByISBN() {
+        log.info("Okay, let's remove an article from the archive");
+        log.info("This is the current content of the archive:");
+        printArticleISBN("");
+        log.info("Please, insert the ISBN of the book you would like to delete:");
+        long pick = askFor("long");
 
+        Article filtered = archive.stream()
+                .filter(article -> article.ISBN_code == pick)
+                .findFirst()
+                .orElse(null);
+
+        if (filtered == null) {
+            log.warn("The ISBN you were searching doesn't exist in the archive.");
+        } else {
+            log.info(filtered.toString());
+        }
+    }
 }
