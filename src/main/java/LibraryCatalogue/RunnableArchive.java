@@ -2,36 +2,63 @@ package LibraryCatalogue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
 import java.time.Year;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.io.FileUtils;
 
 public class RunnableArchive {
     static final Logger log = LoggerFactory.getLogger(RunnableArchive.class);
     static final Scanner input = new Scanner(System.in);
     static Set<Article> archive = new HashSet<Article>();
+    static String toWrite = "";
 
     public static void main(String[] args) {
+        initializeArchive();
+        //addArticle();
+        //removeArticleFromArchive();
+        //generalSearch();
+        log.info(archive.toString());
+        File f = new File("src\\main\\resources\\archive.txt");
+        if (f.exists()) {
+            log.info("file exists");
+        } else {
+            log.info("file doesn't exists");
+        }
 
-        // creating 2 Books & 2 Magazine
+        if (readExistingFile(f) != "") {
+            log.info("it's written");
+        } else {
+            log.info("it's empty");
+        }
+        setToWrite();
+        exportInFile(f, toWrite);
+        log.info(readExistingFile(f));
+    }
+
+    public static void initializeArchive() {
         Book b1 = new Book("Eragon", Year.parse("2007"), 865, "Christopher Paolini", "Fantasy");
         Book b2 = new Book("HarryPotter", Year.parse("1997"), 1021, "J.K. Rowling", "Fantasy");
+        Book b3= new Book("The Lord of the Rings", Year.parse("1937"), 1021, "J.R.R. Tolkien", "Fantasy");
+        Book b4 = new Book("The Brothers Karamazov", Year.parse("1880"), 1021, "Fyodor Dostoevsky", "Romance");
         Magazine m1 = new Magazine("IO", Year.parse("2022"), 66, Periodicity.MONTHLY);
         Magazine m2 = new Magazine("TODAY", Year.parse("2020"), 38, Periodicity.WEEKLY);
+        Magazine m3 = new Magazine("MOTORS", Year.parse("2015"), 80, Periodicity.HALF_YEARLY);
+        Magazine m4 = new Magazine("NOVELLA2000", Year.parse("2000"), 25, Periodicity.WEEKLY);
 
         archive.add(b1);
         archive.add(b2);
+        archive.add(b3);
+        archive.add(b4);
         archive.add(m1);
         archive.add(m2);
-
-
-        //addArticle();
-        //removeArticleFromArchive();
-        generalSearch();
-
-
+        archive.add(m3);
+        archive.add(m4);
     }
 
     public static void addArticle() {
@@ -236,7 +263,6 @@ public class RunnableArchive {
         }
     }
 
-
     public static void searchArticleBy(long n) {
         Article filtered = archive.stream()
                 .filter(article -> article.ISBN_code == n)
@@ -274,6 +300,34 @@ public class RunnableArchive {
             log.warn("The Year you were searching for doesn't exist in the archive.");
         } else {
             log.info(filtered.toString());
+        }
+    }
+
+    public static void exportInFile(File f, String s) {
+
+        try {
+            FileUtils.writeStringToFile(f, s, "UTF-8");
+            log.info("Archive has been exported on file " + f.toString());
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void setToWrite() {
+        String updatedToWrite = "";
+        for (Article a : RunnableArchive.archive) {
+            updatedToWrite += a.toString() + " | ";
+        }
+
+        RunnableArchive.toWrite =  updatedToWrite;
+    }
+
+    public static String readExistingFile(File f) {
+        try {
+            return ((FileUtils.readFileToString(f, "UTF-8")).replace(" | ", ", "));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
         }
     }
 
