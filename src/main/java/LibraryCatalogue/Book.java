@@ -1,16 +1,12 @@
 package LibraryCatalogue;
 
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.time.LocalDate;
 import java.time.Year;
 
 @Getter
 public class Book extends Article {
-    String author;
-    String genre;
+    private String author;
+    private String genre;
 
     public Book(String title, Year release, int pn, String auth, String gen) {
         super(title, release, pn);
@@ -27,17 +23,17 @@ public class Book extends Article {
     @Override
     public String toString() {
         return "Book{" +
-                "ISBN_code=" + ISBN_code +
-                ", title=" + title +
-                ", release_Y=" + release_Y +
-                ", pageNum=" + pageNum +
-                ", author=" + author +
-                ", genre=" + genre +
+                "ISBN_code=" + this.getISBN_code() +
+                ", title=" + this.getTitle() +
+                ", release_Y=" + this.getRelease_Y() +
+                ", pageNum=" + this.getPageNum() +
+                ", author=" + this.getAuthor() +
+                ", genre=" + this.getGenre() +
                 '}';
     }
 
     public static String transformToString(Book b) {
-        return b.ISBN_code + "@" + b.title + "@" + b.release_Y + "@" + b.pageNum + "@" + b.author + "@" + b.genre;
+        return b.getISBN_code() + "@" + b.getTitle() + "@" + b.getRelease_Y() + "@" + b.getPageNum() + "@" + b.getAuthor() + "@" + b.getGenre();
     }
 
     public static Book transformToBook(String[] stringBook) {

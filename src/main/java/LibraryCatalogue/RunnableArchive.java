@@ -156,21 +156,21 @@ public class RunnableArchive {
     }
     // method to perform research in the archive by ISBN CODE
     public static void printArticleISBN() {
-        archive.forEach(article -> log.info("title: " + article.title + " - ISBN: " + article.ISBN_code));
+        archive.forEach(article -> log.info("ISBN: " + article.getISBN_code() + " - title: " + article.getTitle()));
         log.info("");
     }
     // method to print in console some articles value determined by the parameter passed as a string
     public static void printArticleInfo(String s) {
         if (s.equals("isbn")) {
-            archive.forEach(article -> log.info("ISBN: " + article.ISBN_code));
+            archive.forEach(article -> log.info("ISBN: " + article.getISBN_code()));
             log.info("");
         } else if (s.equals("year")) {
-            archive.forEach(article -> log.info("Year: " + article.release_Y));
+            archive.forEach(article -> log.info("Year: " + article.getRelease_Y()));
             log.info("");
         } else {
             archive.stream()
                     .filter(article -> article instanceof Book )
-                    .forEach(article -> log.info("Author: " + ((Book) article).author));
+                    .forEach(article -> log.info("Author: " + ((Book) article).getAuthor()));
             log.info("");
         }
 
@@ -240,7 +240,7 @@ public class RunnableArchive {
         long pick = askFor("long");
 
         Set<Article> updatedArchive = archive.stream()
-                .filter(article -> article.ISBN_code !=  pick)
+                .filter(article -> article.getISBN_code() !=  pick)
                 .collect(Collectors.toSet());
         archive.clear();
         archive.addAll(updatedArchive);
@@ -282,7 +282,7 @@ public class RunnableArchive {
     // research by ISBN
     public static void searchArticleBy(long n) {
         Article filtered = archive.stream()
-                .filter(article -> article.ISBN_code == n)
+                .filter(article -> article.getISBN_code() == n)
                 .findFirst()
                 .orElse(null);
 
@@ -295,7 +295,7 @@ public class RunnableArchive {
     //  method to perform research by Year - Overload
     public static void searchArticleBy(Year y) {
         Set<Article> filtered = archive.stream()
-                .filter(article -> article.release_Y.equals(y))
+                .filter(article -> article.getRelease_Y().equals(y))
                 .collect(Collectors.toSet());
         if (filtered.size() < 1) {
             log.warn("SEARCH RESULT: The Year you were searching for doesn't exist in the archive.");
@@ -309,7 +309,7 @@ public class RunnableArchive {
     public static void searchArticleBy(String auth) {
         Set<Article> filtered = archive.stream()
                 .filter(article -> article instanceof Book)
-                .filter(article -> ((Book) article).author.contains(auth))
+                .filter(article -> ((Book) article).getAuthor().contains(auth))
                 .collect(Collectors.toSet());
 
         if (filtered.size() < 1) {

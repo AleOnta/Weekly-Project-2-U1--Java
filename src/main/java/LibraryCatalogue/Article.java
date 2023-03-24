@@ -9,10 +9,10 @@ import java.util.Random;
 @Getter
 public class Article {
     Random idGen = new Random();
-    long ISBN_code;
-    String title;
-    Year release_Y;
-    int pageNum;
+    private long ISBN_code;
+    private String title;
+    private Year release_Y;
+    private int pageNum;
 
     public Article(String t, Year release, int pn) {
         ISBN_code = generateID();

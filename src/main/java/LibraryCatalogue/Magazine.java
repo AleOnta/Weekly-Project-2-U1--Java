@@ -1,14 +1,11 @@
 package LibraryCatalogue;
 
 import lombok.Getter;
-import lombok.ToString;
-
-import java.time.LocalDate;
 import java.time.Year;
 
 @Getter
 public class Magazine extends Article {
-    Periodicity period;
+    private Periodicity period;
 
     public Magazine(String title, Year release, int pn, Periodicity per) {
         super(title, release, pn);
@@ -23,16 +20,16 @@ public class Magazine extends Article {
     @Override
     public String toString() {
         return "Magazine{" +
-                "ISBN_code=" + ISBN_code +
-                ", title=" + title +
-                ", release_Y=" + release_Y +
-                ", pageNum=" + pageNum +
-                ", period=" + period +
+                "ISBN_code=" + this.getISBN_code() +
+                ", title=" + this.getTitle() +
+                ", release_Y=" + this.getRelease_Y() +
+                ", pageNum=" + this.getPageNum() +
+                ", period=" + this.getPeriod() +
                 '}';
     }
 
     public static String transformToString(Magazine m) {
-        return m.ISBN_code + "@" + m.title + "@" + m.release_Y + "@" + m.pageNum + "@" + m.period;
+        return m.getISBN_code() + "@" + m.getTitle() + "@" + m.getRelease_Y() + "@" + m.getPageNum() + "@" + m.getPeriod();
     }
 
     public static Magazine transformToMagazine(String[] stringMag) {
