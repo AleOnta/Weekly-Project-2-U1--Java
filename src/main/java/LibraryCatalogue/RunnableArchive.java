@@ -6,6 +6,7 @@ import java.time.Year;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class RunnableArchive {
     static final Logger log = LoggerFactory.getLogger(RunnableArchive.class);
@@ -26,7 +27,8 @@ public class RunnableArchive {
         archive.add(m2);
 
 
-        addArticle();
+        //addArticle();
+        //removeArticleFromArchive();
 
 
 
@@ -59,36 +61,7 @@ public class RunnableArchive {
         }
     }
 
-    public static void addToArchive(int n) {
-        if (n == 1) {
-            log.info("insert the title:");
-            String title = input.next();
-            log.info("insert the year:");
-            String year = input.next();
-            log.info("insert the number of page:");
-            int pageNum = askForInt();
-            log.info("insert the author:");
-            String auth = input.next();
-            log.info("insert the genre:");
-            String gen = input.next();
-            log.info("Perfect, i'm adding the new Book!");
-            archive.add(new Book(title, Year.parse(year), pageNum, auth, gen));
-            log.info(archive.toString());
-        } else {
-            log.info("insert the title:");
-            String title = input.next();
-            log.info("insert the year:");
-            String year = input.next();
-            log.info("insert the number of page:");
-            int pageNum = askForInt();
-            log.info("insert the corresponding value of periodicity: \n1 - Weekly | 2 - Monthly | 3 - Half Yearly");
-            Periodicity period = askForPeriod();
-            archive.add(new Magazine(title, Year.parse(year), pageNum, period));
-            log.info(archive.toString());
-        }
-    }
-
-    public static int askForInt() {
+    public static int askFor() {
         boolean isRunning = true;
         int pick = 0;
         while (isRunning) {
@@ -96,6 +69,22 @@ public class RunnableArchive {
                 pick = input.nextInt();
             } else {
                 log.warn("Unfit type of value, please insert an integer");
+                input.nextLine();
+                continue;
+            }
+            isRunning = false;
+        }
+        return pick;
+    }
+
+    public static long askFor(String type) {
+        boolean isRunning = true;
+        long pick = 0;
+        while (isRunning) {
+            if (input.hasNextLong()) {
+                pick = input.nextLong();
+            } else {
+                log.warn("Unfit type of value, please insert a "+ type +" number");
                 input.nextLine();
                 continue;
             }
@@ -130,6 +119,58 @@ public class RunnableArchive {
             isRunning = false;
         }
         return period;
+    }
+
+    public static void printArticleISBN() {
+        archive.forEach(article -> System.out.println("title: " + article.title + " - ISBN: " + article.ISBN_code));
+    }
+
+    public static void printArticleISBN(String s) {
+        archive.forEach(article -> System.out.println(s + "- ISBN: " + article.ISBN_code));
+    }
+
+    public static void addToArchive(int n) {
+        if (n == 1) {
+            log.info("insert the title:");
+            String title = input.next();
+            log.info("insert the year:");
+            String year = input.next();
+            log.info("insert the number of page:");
+            int pageNum = askFor();
+            log.info("insert the author:");
+            String auth = input.next();
+            log.info("insert the genre:");
+            String gen = input.next();
+            log.info("Perfect, i'm adding the new Book!");
+            archive.add(new Book(title, Year.parse(year), pageNum, auth, gen));
+            log.info(archive.toString());
+        } else {
+            log.info("insert the title:");
+            String title = input.next();
+            log.info("insert the year:");
+            String year = input.next();
+            log.info("insert the number of page:");
+            int pageNum = askFor();
+            log.info("insert the corresponding value of periodicity: \n1 - Weekly | 2 - Monthly | 3 - Half Yearly");
+            Periodicity period = askForPeriod();
+            archive.add(new Magazine(title, Year.parse(year), pageNum, period));
+            log.info(archive.toString());
+        }
+    }
+
+    public static void removeArticleFromArchive() {
+        log.info("Okay, let's remove an article from the archive");
+        log.info("This is the current content of the archive:");
+        printArticleISBN();
+        log.info("Please, insert the ISBN of the book you would like to delete:");
+        long pick = askFor("long");
+
+        Set<Article> updatedArchive = archive.stream()
+                .filter(article -> article.ISBN_code !=  pick)
+                .collect(Collectors.toSet());
+        archive.clear();
+        archive.addAll(updatedArchive);
+        log.info(archive.toString());
     }
 
 
