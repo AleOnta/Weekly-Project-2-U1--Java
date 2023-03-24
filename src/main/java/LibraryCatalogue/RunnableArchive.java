@@ -20,25 +20,31 @@ public class RunnableArchive {
 
     public static void main(String[] args) {
         initializeArchive();
-        //addArticle();
-        //removeArticleFromArchive();
-        //generalSearch();
-        log.info(archive.toString());
-        File f = new File("src\\main\\resources\\archive.txt");
-        if (f.exists()) {
-            log.info("file exists");
-        } else {
-            log.info("file doesn't exists");
+        log.info("Welcome into the archive, what would you like to do?");
+        boolean isRunning = true;
+        while (isRunning) {
+            log.info("Digit in console the corresponding Integer to the action you want to perform.");
+            log.info("1 - Add a new Article");
+            log.info("2 - Delete an Article by ISBN");
+            log.info("3 - Search for an Article");
+            log.info("0 - To exit the System");
+
+            int actionToPerform = askFor();
+            switch (actionToPerform) {
+                case 0 -> isRunning = false;
+                case 1 -> addArticle();
+                case 2 -> removeArticleFromArchive();
+                case 3 -> generalSearch();
+            }
         }
 
-        if (readExistingFile(f) != "") {
-            log.info("it's written");
-        } else {
-            log.info("it's empty");
-        }
+        log.info("Okay then, bye!\n");
+
+        File f = new File("src\\main\\resources\\archive.txt");
         setToWrite();
         exportInFile(f, toWrite);
-        log.info(readExistingFile(f));
+        log.info("FILE READ --> " + readExistingFile(f));
+
     }
 
     public static void initializeArchive() {
@@ -59,33 +65,6 @@ public class RunnableArchive {
         archive.add(m2);
         archive.add(m3);
         archive.add(m4);
-    }
-
-    public static void addArticle() {
-        log.info("What kind of article would you like to add?\n0 - toExit the program\n1 - a Book\n2 - a Magazine");
-        boolean isRunning = true;
-        int pick = 4;
-        while (isRunning) {
-            if (input.hasNextInt()) {
-                pick = input.nextInt();
-                if (pick < 0 || pick > 3) {
-                    log.info("invalid value, insert again");
-                    input.nextLine();
-                    continue;
-                } else {
-                    switch (pick) {
-                        case 0 -> log.info("shutting off the system");
-                        case 1 -> addToArchive(1);
-                        case 2 -> addToArchive(2);
-                    }
-                }
-            } else {
-                log.warn("Unfit type of value, please insert an integer between 1 and 3");
-                input.nextLine();
-                continue;
-            }
-            isRunning = false;
-        }
     }
 
     public static int askFor() {
@@ -186,16 +165,43 @@ public class RunnableArchive {
 
     }
 
+    public static void addArticle() {
+        log.info("What kind of article would you like to add?\n0 - toExit the program\n1 - a Book\n2 - a Magazine");
+        boolean isRunning = true;
+        int pick = 4;
+        while (isRunning) {
+            if (input.hasNextInt()) {
+                pick = input.nextInt();
+                if (pick < 0 || pick > 3) {
+                    log.info("invalid value, insert again");
+                    input.nextLine();
+                    continue;
+                } else {
+                    switch (pick) {
+                        case 0 -> log.info("shutting off the system");
+                        case 1 -> addToArchive(1);
+                        case 2 -> addToArchive(2);
+                    }
+                }
+            } else {
+                log.warn("Unfit type of value, please insert an integer between 1 and 3");
+                input.nextLine();
+                continue;
+            }
+            isRunning = false;
+        }
+    }
+
     public static void addToArchive(int n) {
         if (n == 1) {
             log.info("insert the title:");
-            String title = input.next();
+            String title = input.next() + input.nextLine();
             log.info("insert the year:");
             String year = input.next();
             log.info("insert the number of page:");
             int pageNum = askFor(0);
             log.info("insert the author:");
-            String auth = input.next();
+            String auth = input.next() + input.nextLine();
             log.info("insert the genre:");
             String gen = input.next();
             log.info("Perfect, i'm adding the new Book!");
@@ -203,7 +209,7 @@ public class RunnableArchive {
             log.info(archive.toString());
         } else {
             log.info("insert the title:");
-            String title = input.next();
+            String title =input.next() + input.nextLine();
             log.info("insert the year:");
             String year = input.next();
             log.info("insert the number of page:");
